@@ -1,0 +1,13 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.env
+.streamlit/secrets.toml
+data/app.db
+data/generated/*
+data/ground_truth/*
+!data/generated/.gitkeep
+!data/ground_truth/.gitkeep
+*.egg-info/
+.DS_Store
