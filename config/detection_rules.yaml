@@ -1,0 +1,77 @@
+# Detection rules and scoring. Change numbers here; no code changes needed.
+# category: SUSPICIOUS = counts toward the fraud-risk score
+#           EXCEPTION  = integrity/financial problem, reported separately, NOT scored as fraud risk
+#           BENIGN     = innocently explained sharing, score 0, kept for transparency
+version: 1
+
+detection:
+  narrative:
+    similarity_threshold: 0.85       # Jaccard similarity of normalised word sets
+  timing:
+    policy_start_to_incident_days: 30
+    filing_delay_days: 1
+    payment_lag_days: 1              # payment within N days of max(decision date, invoice date)
+    min_signals: 2                   # one weak timing signal alone is ignored
+  repeat_provider:
+    window_days: 60
+
+scoring:
+  claim_flag_threshold: 40
+  high_risk_threshold: 70
+  severity_bands: {HIGH: 40, MEDIUM: 15}
+
+networks:
+  provider_link_min_score: 10        # a claim needs an indicator this strong to link its claimant to a provider
+  network_flag_threshold: 80
+  min_distinct_types: 2
+  multi_signal_bonus: 10             # added per extra distinct indicator type
+  high_priority_score: 150
+  claim_network_bonus: 20            # risk-score boost for claims inside a flagged network
+
+indicators:
+  SHARED_PHONE:
+    category: SUSPICIOUS
+    base_score: 30
+    per_extra_member: 5
+    max_score: 45
+    description: "Two or more claimants living at different addresses use the same phone number. Score = base + per_extra_member x (members - 2), capped."
+  SHARED_EMAIL:
+    category: SUSPICIOUS
+    base_score: 30
+    per_extra_member: 5
+    max_score: 45
+    description: "Two or more claimants living at different addresses use the same email address. Score = base + per_extra_member x (members - 2), capped."
+  SIMILAR_NARRATIVE:
+    category: SUSPICIOUS
+    base_score: 30
+    per_claim: 5
+    max_score: 60
+    description: "Claims from different claimants have near-identical incident narratives (word-set similarity above the threshold). Score = base + per_claim x claims, capped."
+  DUPLICATE_INVOICE_ACROSS_CLAIMANTS:
+    category: SUSPICIOUS
+    base_score: 50
+    description: "The same invoice (same fingerprint, or same provider and invoice reference) appears on claims of different claimants."
+  UNUSUAL_TIMING:
+    category: SUSPICIOUS
+    base_score: 10
+    description: "At least two of: incident soon after policy start, claim filed within a day of the incident, payment made almost immediately after approval or invoice. Individually these are common, so each alone is ignored."
+  REPEAT_CLAIMANT_PROVIDER:
+    category: SUSPICIOUS
+    base_score: 5
+    description: "The same claimant has several claims with the same provider within a short window. Often genuine, so it is a weak signal."
+  PAYMENT_EXCEEDS_APPROVED:
+    category: EXCEPTION
+    base_score: 40
+    description: "Total payments on a claim exceed the approved amount. Reported as a financial exception; the score is a severity weight only."
+  DATA_INTEGRITY_VIOLATION:
+    category: EXCEPTION
+    base_score: 40
+    description: "A record failed import validation (for example, a claim referencing a nonexistent policy) and was quarantined."
+  MISSING_RELATIONSHIP_EDGE:
+    category: EXCEPTION
+    base_score: 20
+    description: "Two claimants share a phone or email in the data, but no matching relationship edge is recorded."
+  BENIGN_SHARED_ADDRESS:
+    category: BENIGN
+    base_score: 0
+    description: "Several claimants share one address (a household). A common address alone is never treated as evidence."
