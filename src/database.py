@@ -298,3 +298,10 @@ def load_dataset(tables: dict[str, list[dict]], replace: bool = False,
             rows = tables[name]
             for i in range(0, len(rows), 1000):
                 conn.execute(metadata.tables[name].insert(), rows[i:i + 1000])
+
+def read_tables(names=None) -> dict:
+    """Read tables into pandas DataFrames (empty tables still return their columns)."""
+    import pandas as pd
+    names = names or [t.name for t in metadata.sorted_tables]
+    with get_engine().connect() as conn:
+        return {n: pd.read_sql(select(metadata.tables[n]), conn) for n in names}
