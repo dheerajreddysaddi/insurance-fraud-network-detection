@@ -279,8 +279,7 @@ def table_counts() -> dict[str, int]:
                 for t in metadata.sorted_tables}
 
 
-def load_dataset(tables: dict[str, list[dict]], replace: bool = False,
-                 wipe_investigations: bool = False) -> None:
+def load_dataset(tables: dict[str, list[dict]], replace: bool = False,wipe_investigations: bool = False, progress: bool = False) -> None:
     """Insert a generated dataset in ONE transaction. Never overwrites silently."""
     with get_engine().begin() as conn:
         n_claims = conn.execute(select(func.count()).select_from(claims)).scalar_one()
@@ -296,6 +295,8 @@ def load_dataset(tables: dict[str, list[dict]], replace: bool = False,
                 conn.execute(delete(metadata.tables[name]))
         for name in LOAD_ORDER:
             rows = tables[name]
+            if progress:
+                print(f"  loading {name}: {len(rows)} rows", flush=True)
             for i in range(0, len(rows), 1000):
                 conn.execute(metadata.tables[name].insert(), rows[i:i + 1000])
 

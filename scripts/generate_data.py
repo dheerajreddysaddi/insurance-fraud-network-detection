@@ -29,9 +29,18 @@ def main() -> None:
         print(f"  {name:<22}{len(rows):>7}")
 
     if not args.skip_db:
+        import time
+        t0 = time.time()
+
+
+        def lap(msg):
+            print(f"  [{time.time() - t0:6.1f}s] {msg}", flush=True)
         database.check_connection()
+        lap("connected")
         database.create_schema()
-        database.load_dataset(ds.tables, replace=args.replace, wipe_investigations=args.wipe_investigations)
+        lap("schema ready")
+        database.load_dataset(ds.tables, replace=args.replace, wipe_investigations=args.wipe_investigations,progress=True)
+        lap("all tables loaded")
         print("Loaded into database.")
 
 
