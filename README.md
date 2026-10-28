@@ -128,23 +128,6 @@ With seed 777 and unchanged rules: rules + network precision 0.127, FPR 0.064, 1
 networks were still recovered. These compare the rules with synthetic labels made by the same author, so they do not
 show real-world fraud-detection performance.
 
-## Five-minute demo
-1. `python -m streamlit run app.py`, open the URL (data already loaded as above).
-2. **Overview:** 5,000 claims, 268 flagged, 12 flagged networks. Open the data-quality expander.
-3. **Network Analysis:** open `SUSNET-CLM-2026-000130` (6 claimants, provider PRV-000364). Point out the dotted red line: a
-   relationship found in the data but missing from the edge table.
-4. Read the evidence tab, then sign in and press **Open investigation**.
-5. **Investigation Workspace:** move it OPEN -> IN_REVIEW, add a note, try closing with an empty note (refused).
-6. **Claims Explorer:** search `CLAIM-2026-002185` and read its Indicators tab.
-7. **Evaluation:** explain the table above and the false-positive networks list.
-
-## Optional: Docker
-```bash
-docker build -t fraud-network .
-docker run --rm -v "$(pwd)/data:/app/data" --env-file .env fraud-network python scripts/generate_data.py --scale full --replace
-docker run --rm -p 8501:8501 -v "$(pwd)/data:/app/data" --env-file .env fraud-network
-```
-(PowerShell: use `${PWD}` instead of `$(pwd)`.)
 
 ## Known limitations
 - Claim-level precision is low (0.13-0.17) because every claim of every member of a flagged network is flagged.
