@@ -26,7 +26,7 @@ def _indicator_ids(ctx, subject_type, subject_id):
 
 
 def _open_form(ctx):
-    with st.expander("Open a new investigation"):
+    with st.expander("Open a new investigation", expanded=False):
         stype = st.radio("Subject", ["CLAIM", "NETWORK"], horizontal=True)
         sid = st.text_input("Claim ID or network ID", placeholder="CLAIM-2026-000123 or SUSNET-CLM-2026-000130")
         prio = st.selectbox("Priority", ui.PRIORITIES, index=1, key="new_prio")
@@ -85,12 +85,15 @@ def _actions(inv_id, current):
 
 
 def render(ctx):
-    st.header("Investigation Workspace")
+    ui.page_header("Investigation Workspace", "Track reviews: open, change status, add notes. History is never overwritten.",
+                     ["Pick an investigation", "Read the linked evidence", "Change status or add a note"])
     st.caption("Statuses record the reviewer's workflow decision. They are not confirmed fraud labels. "
                "Changes made by other reviewers appear when you refresh or interact with the page.")
     inv = investigations.list_investigations()
     counts = {s: int((inv["current_status"] == s).sum()) if len(inv) else 0 for s in ENUMS["investigation_status"]}
-    st.caption("  |  ".join(f"{s}: {n}" for s, n in counts.items()))
+    cols = st.columns(len(counts))
+    for col, (name, n) in zip(cols, counts.items()):
+        col.metric(name.replace("_", " ").title(), n)
     _open_form(ctx)
     if inv.empty:
         st.info("No investigations yet. Open one above, or from the Claims Explorer or Network Analysis page.")
@@ -98,7 +101,10 @@ def render(ctx):
     wanted = st.multiselect("Filter by status", ENUMS["investigation_status"])
     shown = inv[inv["current_status"].isin(wanted)] if wanted else inv
     row = ui.table_with_selection(shown[["investigation_id", "subject_type", "subject_id", "priority",
-                                         "current_status", "opened_by", "opened_at"]], "inv_table")
+                                           "current_status", "opened_by", "opened_at"]], "inv_table",
+                                    {"investigation_id": "Investigation", "subject_type": "Type", "subject_id": "Subject",
+                                     "priority": "Priority", "current_status": "Status", "opened_by": "Opened by",
+                                     "opened_at": "Opened"})
     if row is None:
         st.caption("Select an investigation to see its evidence and history.")
         return
@@ -106,14 +112,15 @@ def render(ctx):
     detail = investigations.get_investigation(inv_id)
     s = detail["summary"]
     st.divider()
-    st.subheader(f"{inv_id} - {s['current_status']}")
+    st.markdown(f"<h3>{inv_id} &nbsp;{ui.badge(s['current_status'].replace('_', ' ').title(), ui.STATUS_TONE[s['current_status']])}</h3>",
+                  unsafe_allow_html=True)
     st.write(f"Subject: **{s['subject_type']} {s['subject_id']}** - priority {s['priority']} - "
              f"opened by {s['opened_by']} at {s['opened_at']}")
     st.markdown("**Evidence linked when it was opened**")
     if detail["indicators"].empty:
         st.caption("No indicators were linked.")
     for r in detail["indicators"].itertuples():
-        st.markdown(f"- **{r.indicator_type}** ({r.severity}, score {r.score}): {r.explanation}")
+        st.markdown(f"- **{ui.friendly(r.indicator_type)}** ({r.severity}, score {r.score}): {r.explanation}")
     st.markdown("**History (append-only)**")
     st.dataframe(detail["events"][["event_time", "event_type", "from_status", "to_status", "actor", "note"]],
                  hide_index=True, use_container_width=True)

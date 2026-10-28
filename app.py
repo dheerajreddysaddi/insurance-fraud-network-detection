@@ -1,4 +1,4 @@
-"""Streamlit entry point.  Run with:  streamlit run app.py"""
+"""Streamlit entry point.  Run with:  python -m streamlit run app.py"""
 import streamlit as st
 
 from src import app_data, config, database, fraud_detection, ui
@@ -35,10 +35,28 @@ def main() -> None:
         st.error(f"Database error ({type(exc).__name__}). Check DATABASE_URL and the app logs.")
         st.stop()
 
-    st.sidebar.title("Fraud Network Review")
-    page = st.sidebar.radio("Go to", list(PAGES), label_visibility="collapsed")
-    st.sidebar.caption("Database: " + ("local SQLite file" if dialect == "sqlite" else "hosted PostgreSQL"))
-    ui.sidebar_login(dialect)
+    page = st.session_state.setdefault("page", "Overview")
+    with st.sidebar:
+        ui.brand()
+        ui.nav(list(PAGES))
+        st.divider()
+        label = f"Signed in: {ui.reviewer()}" if ui.reviewer() else "Reviewer sign-in & tools"
+        with st.expander(label, expanded=not ui.reviewer()):
+            ui.sidebar_login(dialect)
+            st.divider()
+            if st.button("Reload data"):
+                st.cache_data.clear()
+                st.rerun()
+            if st.button("Run detection now"):
+                if not ui.reviewer():
+                    st.warning("Sign in first.")
+                else:
+                    with st.spinner("Running detection..."):
+                        app_data.run_detection_and_save()
+                    ui.flash("Detection finished. It was saved as a new run; earlier runs are kept.")
+                    st.rerun()
+        st.caption("Database: " + ("local SQLite file" if dialect == "sqlite" else "hosted PostgreSQL"))
+        st.caption("A high score means review recommended, not fraud proven.")
 
     version = app_data.source_version()
     tables = app_data.load_source_tables(version)
@@ -47,20 +65,6 @@ def main() -> None:
                    "`python scripts/generate_data.py --scale full --replace`\n\n"
                    "(for a hosted database, set DATABASE_URL first; see DEPLOYMENT.md).")
         return
-
-    with st.sidebar:
-        st.divider()
-        if st.button("Reload data"):
-            st.cache_data.clear()
-            st.rerun()
-        if st.button("Run detection now"):
-            if not ui.reviewer():
-                st.warning("Sign in first.")
-            else:
-                with st.spinner("Running detection..."):
-                    app_data.run_detection_and_save()
-                ui.flash("Detection finished. It was saved as a new run; earlier runs are kept.")
-                st.rerun()
 
     run = app_data.latest_run()
     analysis = app_data.load_analysis(run["run_id"], version) if run else None

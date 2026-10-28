@@ -1,15 +1,20 @@
 """Network Analysis: ranked suspicious groups, a readable graph, and a table alternative."""
+import html
+
 import networkx as nx
+import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
 
 from src import app_data, network_analysis, ui
 
 STATUS_STYLE = {  # status -> (colour, dash, legend label)
-    "OBSERVED": ("#6B7280", "solid", "Observed (in edge table)"),
+    "OBSERVED": ("#6B7280", "solid", "Recorded in the edge table"),
     "INFERRED": (ui.ACCENT, "dash", "Inferred by the detector"),
-    "MISSING_FROM_EDGE_TABLE": ("#C0392B", "dot", "In the data, missing from edge table"),
+    "MISSING_FROM_EDGE_TABLE": ("#C0392B", "dot", "In the data, missing from the edge table"),
 }
+STATUS_PLAIN = {"OBSERVED": "Recorded", "INFERRED": "Inferred by detector",
+                "MISSING_FROM_EDGE_TABLE": "In data, missing from records"}
 MAX_GRAPH_NODES = 40
 
 
@@ -35,7 +40,8 @@ def _figure(sub, claimants, providers):
         ys += [pos[a][1], pos[b][1], None]
         mid_x.append((pos[a][0] + pos[b][0]) / 2)
         mid_y.append((pos[a][1] + pos[b][1]) / 2)
-        mid_text.append(f"{a} - {b}<br>" + "<br>".join(f"{l['kind']} ({l['status']})" for l in data["links"]))
+        mid_text.append(f"{a} - {b}<br>" + "<br>".join(f"{ui.friendly(l['kind'])} ({STATUS_PLAIN[l['status']]})"
+                                                      for l in data["links"]))
     for status, (xs, ys) in lines.items():
         if xs:
             color, dash, label = STATUS_STYLE[status]
@@ -64,12 +70,14 @@ def _figure(sub, claimants, providers):
 
 
 def render(ctx):
+    ui.page_header("Network Analysis", "Groups of claimants and providers linked by shared details or duplicated paperwork.",
+                   ["Pick a network", "Check the graph and the connections table",
+                    "Read the evidence, then open an investigation"])
     if ctx["analysis"] is None:
         ui.no_detection()
         return
     tables, a = ctx["tables"], ctx["analysis"]
     nets, G = a["networks"], a["graph"]
-    st.header("Network Analysis")
     if len(nets) == 0:
         st.info("No connected groups were found.")
         return
@@ -78,20 +86,29 @@ def render(ctx):
     if shown.empty:
         st.info("No flagged networks. Untick the box to see weaker groups.")
         return
-    st.dataframe(shown[["rank", "network_id", "network_score", "priority", "flagged", "n_claimants", "n_claims",
-                        "n_providers", "indicator_types", "unrecorded_edges"]], hide_index=True, use_container_width=True)
-    choice = st.selectbox("Open network", list(shown["network_id"]), format_func=lambda n: (
-        f"#{int(nets.loc[nets.network_id == n, 'rank'].iloc[0])}  {n}  "
-        f"(score {int(nets.loc[nets.network_id == n, 'network_score'].iloc[0])})"))
+    st.dataframe(pd.DataFrame({
+        "Rank": shown["rank"], "Network": shown["network_id"], "Priority": shown["priority"].str.title(),
+        "Score": shown["network_score"], "Claimants": shown["n_claimants"], "Claims": shown["n_claims"],
+        "Providers": shown["n_providers"], "Warning signs": shown["indicator_types"].map(ui.friendly_list),
+        "Missing from records": shown["unrecorded_edges"]}), hide_index=True, use_container_width=True)
+
+    ids = list(shown["network_id"])
+    if st.session_state.get("network_choice") not in ids:
+        st.session_state.pop("network_choice", None)
+    rank_of, score_of = dict(zip(nets["network_id"], nets["rank"])), dict(zip(nets["network_id"], nets["network_score"]))
+    choice = st.selectbox("Open network", ids, key="network_choice",
+                          format_func=lambda n: f"#{int(rank_of[n])}  {n}  (score {int(score_of[n])})")
     row = nets[nets["network_id"] == choice].iloc[0]
 
-    st.info(row["explanation"])
+    st.markdown(f"<h3>{choice} &nbsp;{ui.badge(row['priority'].title() + ' priority', ui.RISK_TONE[row['priority']])}"
+                  f" &nbsp;{ui.chip('Score ' + str(int(row['network_score'])))}</h3>", unsafe_allow_html=True)
+    ui.callout("<b>Why this network was flagged</b><br>" + html.escape(row["explanation"]))
     m = st.columns(5)
-    m[0].metric("Claimants", int(row["n_claimants"]))
-    m[1].metric("Claims", int(row["n_claims"]))
-    m[2].metric("Providers", int(row["n_providers"]))
-    m[3].metric("Network score", f"{int(row['network_score'])} ({row['priority']})")
-    m[4].metric("Claimed / paid", f"{ui.money(row['total_claimed_cents'])} / {ui.money(row['total_paid_cents'])}")
+    ui.kpi(m[0], "Claimants", int(row["n_claimants"]))
+    ui.kpi(m[1], "Claims", int(row["n_claims"]))
+    ui.kpi(m[2], "Providers", int(row["n_providers"]))
+    ui.kpi(m[3], "Claimed", ui.money(row["total_claimed_cents"]))
+    ui.kpi(m[4], "Paid", ui.money(row["total_paid_cents"]))
 
     nodes = set(row["claimant_ids"]) | set(row["provider_ids"])
     sub = G.subgraph(nodes)
@@ -102,16 +119,20 @@ def render(ctx):
         st.plotly_chart(_figure(sub, tables["claimants"].set_index("claimant_id"),
                                 tables["providers"].set_index("provider_id")), use_container_width=True)
         st.caption("C130 means CLM-2026-000130 and P364 means PRV-000364. Circles are claimants, squares are providers. "
-                   "A line is dashed or dotted if any of its evidence is inferred or missing from the edge table. "
+                   "A dashed or dotted line has evidence that was inferred or is missing from the edge table. "
                    "Hover over a line for every piece of evidence.")
 
     t1, t2, t3, t4 = st.tabs(["Connections (table)", "Claimants", "Claims", "Evidence"])
     with t1:
         edges = network_analysis.edges_table(G, nodes)
-        wanted = st.multiselect("Link status", list(STATUS_STYLE), default=list(STATUS_STYLE))
-        st.dataframe(edges[edges["status"].isin(wanted)], hide_index=True, use_container_width=True)
-        st.caption("OBSERVED = recorded in relationship_edges. INFERRED = derived by the detector from claim or invoice "
-                   "data. MISSING_FROM_EDGE_TABLE = true in the data but absent from the recorded edges.")
+        wanted = st.multiselect("Link status", list(STATUS_STYLE), default=list(STATUS_STYLE),
+                                format_func=STATUS_PLAIN.get)
+        edges = edges[edges["status"].isin(wanted)].copy()
+        edges["link_type"] = edges["link_type"].map(ui.friendly)
+        edges["status"] = edges["status"].map(STATUS_PLAIN)
+        st.dataframe(edges, hide_index=True, use_container_width=True)
+        st.caption("Recorded = in the relationship_edges table. Inferred by detector = derived from claim or invoice data. "
+                   "In data, missing from records = true in the data but absent from the recorded edges.")
     with t2:
         members = tables["claimants"][tables["claimants"]["claimant_id"].isin(row["claimant_ids"])]
         st.dataframe(members[["claimant_id", "first_name", "last_name", "phone", "email", "address_line", "city"]],
@@ -124,11 +145,11 @@ def render(ctx):
     inds = app_data.indicators_for_network(a["indicators"], a["rules"], a["owner"], row["claimant_ids"])
     with t4:
         if not inds:
-            st.caption("No indicators.")
+            st.caption("No warning signs.")
         else:
             by_id = {i["indicator_id"]: i for i in inds}
-            pick = st.selectbox("Indicator", list(by_id), format_func=lambda k: (
-                f"{by_id[k]['indicator_type']} - {by_id[k]['entity_id']} (score {by_id[k]['score']})"))
+            pick = st.selectbox("Warning sign", list(by_id), format_func=lambda k: (
+                f"{ui.friendly(by_id[k]['indicator_type'])} - {by_id[k]['entity_id']} (score {by_id[k]['score']})"))
             ind = by_id[pick]
             st.write(ind["explanation"])
             st.caption("Rule: " + ind["rule_description"])

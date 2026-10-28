@@ -3,7 +3,7 @@ import streamlit as st
 
 from src import app_data, ui
 
-COLUMNS = ["indicator_id", "type", "severity", "score", "entity_id", "claim_id", "explanation"]
+COLUMNS = ["indicator_id", "type", "severity", "score", "entity_id"]
 
 
 def _panel(df, by_id, key):
@@ -11,7 +11,7 @@ def _panel(df, by_id, key):
         st.info("No indicators in this category.")
         return
     c1, c2, c3 = st.columns([2, 2, 3])
-    types = c1.multiselect("Type", sorted(df["type"].unique()), key=f"{key}_t")
+    types = c1.multiselect("Type", sorted(df["type"].unique()), key=f"{key}_t", format_func=ui.friendly)
     sev = c2.multiselect("Severity", ["HIGH", "MEDIUM", "LOW"], key=f"{key}_s")
     q = c3.text_input("Search entity ID or explanation", key=f"{key}_q")
     f = df
@@ -25,11 +25,15 @@ def _panel(df, by_id, key):
               | f["explanation"].str.lower().str.contains(ql, regex=False)]
     f = f.sort_values(["score", "indicator_id"], ascending=[False, True])
     st.caption(f"{len(f)} of {len(df)} indicators. Select a row for the rule and evidence.")
-    row = ui.table_with_selection(f[COLUMNS], f"{key}_tbl")
+    disp = f[COLUMNS].copy()
+    disp["type"] = disp["type"].map(ui.friendly)
+    disp["severity"] = disp["severity"].str.title()
+    row = ui.table_with_selection(disp, f"{key}_tbl", {
+          "indicator_id": None, "type": "Warning sign", "severity": "Severity", "score": "Score", "entity_id": "About"})
     if row is None:
         return
     ind = by_id[row["indicator_id"]]
-    st.markdown(f"**{ind['indicator_type']}** - severity {ind['severity']} - score {ind['score']}")
+    st.markdown(f"**{ui.friendly(ind['indicator_type'])}** - severity {ind['severity'].title()} - score {ind['score']}")
     st.write(ind["explanation"])
     st.markdown("**Rule:** " + ind["rule_description"])
     st.markdown("**Evidence**")
@@ -39,13 +43,15 @@ def _panel(df, by_id, key):
 
 
 def render(ctx):
+    ui.page_header("Fraud Indicators & Exceptions", "Every rule hit, with the rule and the evidence behind it. "
+                     "Suspicious activity, data problems and innocent sharing are kept apart.")
     if ctx["analysis"] is None:
         ui.no_detection()
         return
     tables, a = ctx["tables"], ctx["analysis"]
     df = app_data.indicators_frame(a["indicators"], a["rules"])
     by_id = {i["indicator_id"]: i for i in a["indicators"]}
-    st.header("Fraud Indicators & Exceptions")
+    
     t1, t2, t3 = st.tabs(["Suspicious activity", "Data & financial exceptions", "Benign shared attributes"])
     with t1:
         st.caption("Rule hits that add to fraud-risk scores. A high score means review is recommended, not that fraud is proven.")

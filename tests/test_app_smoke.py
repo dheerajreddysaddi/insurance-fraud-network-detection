@@ -22,5 +22,6 @@ def test_every_page_renders_without_exceptions(seeded_db):
     at = AppTest.from_file(str(APP), default_timeout=120).run()
     assert not at.exception
     for page in PAGES:
-        at.sidebar.radio[0].set_value(page).run()
+        at.session_state["page"] = page
+        at.run()
         assert not at.exception, page
