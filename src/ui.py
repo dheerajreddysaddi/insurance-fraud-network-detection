@@ -82,7 +82,7 @@ def sidebar_login(dialect: str) -> None:
         if not passcode and dialect != "sqlite":
             st.warning("Read-only: no APP_PASSCODE is configured for this deployment.")
             return
-        name = st.text_input("Your name", key="login_name")
+        name = st.text_input("Your name", key="login_name", max_chars=60)
         code = st.text_input("Passcode", type="password", key="login_code") if passcode else ""
         if st.button("Sign in"):
             if not name.strip():

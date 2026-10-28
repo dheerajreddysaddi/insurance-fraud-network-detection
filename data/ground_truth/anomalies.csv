@@ -1,0 +1,62 @@
+anomaly_id,issue_type,entity_type,entity_id,network_id,expected_decision,note
+ANM-0001,DUPLICATE_INVOICE_ACROSS_CLAIMANTS,INVOICE,INV-PRV-000475-000009,NET-01,REVIEW_RECOMMENDED,"same provider, ref, amount, service date and description on two claimants' claims"
+ANM-0002,DUPLICATE_INVOICE_ACROSS_CLAIMANTS,INVOICE,INV-PRV-000475-000021,NET-01,REVIEW_RECOMMENDED,"same provider, ref, amount, service date and description on two claimants' claims"
+ANM-0003,DUPLICATE_INVOICE_ACROSS_CLAIMANTS,INVOICE,INV-PRV-000364-000004,NET-02,REVIEW_RECOMMENDED,"same provider, ref, amount, service date and description on two claimants' claims"
+ANM-0004,DUPLICATE_INVOICE_ACROSS_CLAIMANTS,INVOICE,INV-PRV-000364-000008,NET-02,REVIEW_RECOMMENDED,"same provider, ref, amount, service date and description on two claimants' claims"
+ANM-0005,DUPLICATE_INVOICE_ACROSS_CLAIMANTS,INVOICE,INV-PRV-000283-000014,NET-05,REVIEW_RECOMMENDED,"same provider, ref, amount, service date and description on two claimants' claims"
+ANM-0006,DUPLICATE_INVOICE_ACROSS_CLAIMANTS,INVOICE,INV-PRV-000283-000015,NET-05,REVIEW_RECOMMENDED,"same provider, ref, amount, service date and description on two claimants' claims"
+ANM-0007,DUPLICATE_INVOICE_ACROSS_CLAIMANTS,INVOICE,INV-PRV-000240-000007,NET-06,REVIEW_RECOMMENDED,"same provider, ref, amount, service date and description on two claimants' claims"
+ANM-0008,DUPLICATE_INVOICE_ACROSS_CLAIMANTS,INVOICE,INV-PRV-000240-000012,NET-06,REVIEW_RECOMMENDED,"same provider, ref, amount, service date and description on two claimants' claims"
+ANM-0009,PLANTED_EDGE_NOT_IN_OBSERVED_EDGES,RELATIONSHIP,CLM-2026-001851|CLM-2026-001159,NET-01,INFER_FROM_ATTRIBUTES,shared email exists on both claimants but no SHARES_EMAIL edge was recorded
+ANM-0010,PLANTED_EDGE_NOT_IN_OBSERVED_EDGES,RELATIONSHIP,CLM-2026-000130|CLM-2026-001391,NET-02,INFER_FROM_ATTRIBUTES,shared email exists on both claimants but no SHARES_EMAIL edge was recorded
+ANM-0011,PAYMENT_EXCEEDS_APPROVED,CLAIM,CLAIM-2026-004461,NET-05,EXCEPTION_REVIEW,total payments exceed approved_cents
+ANM-0012,PAYMENT_EXCEEDS_APPROVED,CLAIM,CLAIM-2026-002312,NET-06,EXCEPTION_REVIEW,total payments exceed approved_cents
+ANM-0013,PAYMENT_EXCEEDS_APPROVED,CLAIM,CLAIM-2026-004433,,EXCEPTION_REVIEW,total payments exceed approved_cents
+ANM-0014,PAYMENT_EXCEEDS_APPROVED,CLAIM,CLAIM-2026-000062,,EXCEPTION_REVIEW,total payments exceed approved_cents
+ANM-0015,PAYMENT_EXCEEDS_APPROVED,CLAIM,CLAIM-2026-001891,,EXCEPTION_REVIEW,total payments exceed approved_cents
+ANM-0016,PAYMENT_EXCEEDS_APPROVED,CLAIM,CLAIM-2026-003161,,EXCEPTION_REVIEW,total payments exceed approved_cents
+ANM-0017,CLAIM_NONEXISTENT_POLICY,CLAIM,CLAIM-2026-005001,,DATA_EXCEPTION_REVIEW,claim references a policy that does not exist (quarantined)
+ANM-0018,CLAIM_NONEXISTENT_POLICY,CLAIM,CLAIM-2026-005002,,DATA_EXCEPTION_REVIEW,claim references a policy that does not exist (quarantined)
+ANM-0019,CLAIM_NONEXISTENT_POLICY,CLAIM,CLAIM-2026-005003,,DATA_EXCEPTION_REVIEW,claim references a policy that does not exist (quarantined)
+ANM-0020,CLAIM_NONEXISTENT_POLICY,CLAIM,CLAIM-2026-005004,,DATA_EXCEPTION_REVIEW,claim references a policy that does not exist (quarantined)
+ANM-0021,CLAIM_NONEXISTENT_POLICY,CLAIM,CLAIM-2026-005005,,DATA_EXCEPTION_REVIEW,claim references a policy that does not exist (quarantined)
+ANM-0022,BENIGN_SHARED_ADDRESS,CLAIMANT,CLM-2026-000496,,NO_FLAG_FROM_ADDRESS_ALONE,household HH-001: 3 claimants share address (address+surname); not evidence of fraud
+ANM-0023,BENIGN_SHARED_ADDRESS,CLAIMANT,CLM-2026-000383,,NO_FLAG_FROM_ADDRESS_ALONE,household HH-002: 3 claimants share address (address+surname+phone); not evidence of fraud
+ANM-0024,BENIGN_SHARED_ADDRESS,CLAIMANT,CLM-2026-000129,,NO_FLAG_FROM_ADDRESS_ALONE,household HH-003: 2 claimants share address (address+surname); not evidence of fraud
+ANM-0025,BENIGN_SHARED_ADDRESS,CLAIMANT,CLM-2026-000311,,NO_FLAG_FROM_ADDRESS_ALONE,household HH-004: 2 claimants share address (address+surname+phone); not evidence of fraud
+ANM-0026,BENIGN_SHARED_ADDRESS,CLAIMANT,CLM-2026-000656,,NO_FLAG_FROM_ADDRESS_ALONE,household HH-005: 2 claimants share address (address+surname); not evidence of fraud
+ANM-0027,BENIGN_SHARED_ADDRESS,CLAIMANT,CLM-2026-000996,,NO_FLAG_FROM_ADDRESS_ALONE,household HH-006: 3 claimants share address (address+surname); not evidence of fraud
+ANM-0028,BENIGN_SHARED_ADDRESS,CLAIMANT,CLM-2026-000626,,NO_FLAG_FROM_ADDRESS_ALONE,household HH-007: 3 claimants share address (address+surname); not evidence of fraud
+ANM-0029,BENIGN_SHARED_ADDRESS,CLAIMANT,CLM-2026-000961,,NO_FLAG_FROM_ADDRESS_ALONE,household HH-008: 2 claimants share address (address+surname+phone); not evidence of fraud
+ANM-0030,BENIGN_SHARED_ADDRESS,CLAIMANT,CLM-2026-001796,,NO_FLAG_FROM_ADDRESS_ALONE,household HH-009: 2 claimants share address (address+surname+phone); not evidence of fraud
+ANM-0031,BENIGN_SHARED_ADDRESS,CLAIMANT,CLM-2026-001648,,NO_FLAG_FROM_ADDRESS_ALONE,household HH-010: 3 claimants share address (address+surname+phone); not evidence of fraud
+ANM-0032,BENIGN_SHARED_ADDRESS,CLAIMANT,CLM-2026-001004,,NO_FLAG_FROM_ADDRESS_ALONE,household HH-011: 2 claimants share address (address+surname+phone); not evidence of fraud
+ANM-0033,BENIGN_SHARED_ADDRESS,CLAIMANT,CLM-2026-000984,,NO_FLAG_FROM_ADDRESS_ALONE,household HH-012: 2 claimants share address (address+surname); not evidence of fraud
+ANM-0034,BENIGN_SHARED_ADDRESS,CLAIMANT,CLM-2026-001564,,NO_FLAG_FROM_ADDRESS_ALONE,household HH-013: 2 claimants share address (address+surname+phone); not evidence of fraud
+ANM-0035,BENIGN_SHARED_ADDRESS,CLAIMANT,CLM-2026-000559,,NO_FLAG_FROM_ADDRESS_ALONE,household HH-014: 3 claimants share address (address+surname); not evidence of fraud
+ANM-0036,BENIGN_SHARED_ADDRESS,CLAIMANT,CLM-2026-000644,,NO_FLAG_FROM_ADDRESS_ALONE,household HH-015: 2 claimants share address (address+surname+phone); not evidence of fraud
+ANM-0037,BENIGN_SHARED_ADDRESS,CLAIMANT,CLM-2026-001712,,NO_FLAG_FROM_ADDRESS_ALONE,household HH-016: 2 claimants share address (address+surname); not evidence of fraud
+ANM-0038,BENIGN_SHARED_ADDRESS,CLAIMANT,CLM-2026-000417,,NO_FLAG_FROM_ADDRESS_ALONE,household HH-017: 2 claimants share address (address+surname); not evidence of fraud
+ANM-0039,BENIGN_SHARED_ADDRESS,CLAIMANT,CLM-2026-000520,,NO_FLAG_FROM_ADDRESS_ALONE,household HH-018: 3 claimants share address (address+surname); not evidence of fraud
+ANM-0040,BENIGN_SHARED_ADDRESS,CLAIMANT,CLM-2026-001903,,NO_FLAG_FROM_ADDRESS_ALONE,household HH-019: 3 claimants share address (address+surname); not evidence of fraud
+ANM-0041,BENIGN_SHARED_ADDRESS,CLAIMANT,CLM-2026-001135,,NO_FLAG_FROM_ADDRESS_ALONE,household HH-020: 3 claimants share address (address+surname); not evidence of fraud
+ANM-0042,BENIGN_SHARED_ADDRESS,CLAIMANT,CLM-2026-000596,,NO_FLAG_FROM_ADDRESS_ALONE,household HH-021: 2 claimants share address (address+surname+phone); not evidence of fraud
+ANM-0043,BENIGN_SHARED_ADDRESS,CLAIMANT,CLM-2026-000775,,NO_FLAG_FROM_ADDRESS_ALONE,household HH-022: 3 claimants share address (address+surname); not evidence of fraud
+ANM-0044,BENIGN_SHARED_ADDRESS,CLAIMANT,CLM-2026-000650,,NO_FLAG_FROM_ADDRESS_ALONE,household HH-023: 3 claimants share address (address+surname+phone); not evidence of fraud
+ANM-0045,BENIGN_SHARED_ADDRESS,CLAIMANT,CLM-2026-000814,,NO_FLAG_FROM_ADDRESS_ALONE,household HH-024: 2 claimants share address (address+surname); not evidence of fraud
+ANM-0046,BENIGN_SHARED_ADDRESS,CLAIMANT,CLM-2026-000800,,NO_FLAG_FROM_ADDRESS_ALONE,household HH-025: 3 claimants share address (address+surname+phone); not evidence of fraud
+ANM-0047,BENIGN_SHARED_ADDRESS,CLAIMANT,CLM-2026-000290,,NO_FLAG_FROM_ADDRESS_ALONE,household HH-026: 2 claimants share address (address+surname+phone); not evidence of fraud
+ANM-0048,BENIGN_SHARED_ADDRESS,CLAIMANT,CLM-2026-000586,,NO_FLAG_FROM_ADDRESS_ALONE,household HH-027: 3 claimants share address (address+surname+phone); not evidence of fraud
+ANM-0049,BENIGN_SHARED_ADDRESS,CLAIMANT,CLM-2026-000432,,NO_FLAG_FROM_ADDRESS_ALONE,household HH-028: 2 claimants share address (address+surname+phone); not evidence of fraud
+ANM-0050,BENIGN_SHARED_ADDRESS,CLAIMANT,CLM-2026-001359,,NO_FLAG_FROM_ADDRESS_ALONE,household HH-029: 3 claimants share address (address+surname); not evidence of fraud
+ANM-0051,BENIGN_SHARED_ADDRESS,CLAIMANT,CLM-2026-000619,,NO_FLAG_FROM_ADDRESS_ALONE,household HH-030: 3 claimants share address (address+surname); not evidence of fraud
+ANM-0052,BENIGN_SHARED_ADDRESS,CLAIMANT,CLM-2026-000196,,NO_FLAG_FROM_ADDRESS_ALONE,household HH-031: 3 claimants share address (address+surname+phone); not evidence of fraud
+ANM-0053,BENIGN_SHARED_ADDRESS,CLAIMANT,CLM-2026-001868,,NO_FLAG_FROM_ADDRESS_ALONE,household HH-032: 2 claimants share address (address+surname+phone); not evidence of fraud
+ANM-0054,BENIGN_SHARED_ADDRESS,CLAIMANT,CLM-2026-001131,,NO_FLAG_FROM_ADDRESS_ALONE,household HH-033: 3 claimants share address (address+surname+phone); not evidence of fraud
+ANM-0055,BENIGN_SHARED_ADDRESS,CLAIMANT,CLM-2026-001629,,NO_FLAG_FROM_ADDRESS_ALONE,household HH-034: 3 claimants share address (address+surname+phone); not evidence of fraud
+ANM-0056,BENIGN_SHARED_ADDRESS,CLAIMANT,CLM-2026-000670,,NO_FLAG_FROM_ADDRESS_ALONE,household HH-035: 2 claimants share address (address+surname+phone); not evidence of fraud
+ANM-0057,BENIGN_SHARED_ADDRESS,CLAIMANT,CLM-2026-000948,,NO_FLAG_FROM_ADDRESS_ALONE,household HH-036: 3 claimants share address (address+surname); not evidence of fraud
+ANM-0058,BENIGN_SHARED_ADDRESS,CLAIMANT,CLM-2026-000514,,NO_FLAG_FROM_ADDRESS_ALONE,household HH-037: 3 claimants share address (address+surname); not evidence of fraud
+ANM-0059,BENIGN_SHARED_ADDRESS,CLAIMANT,CLM-2026-000979,,NO_FLAG_FROM_ADDRESS_ALONE,household HH-038: 2 claimants share address (address+surname+phone); not evidence of fraud
+ANM-0060,BENIGN_SHARED_ADDRESS,CLAIMANT,CLM-2026-001074,,NO_FLAG_FROM_ADDRESS_ALONE,household HH-039: 3 claimants share address (address+surname); not evidence of fraud
+ANM-0061,BENIGN_SHARED_ADDRESS,CLAIMANT,CLM-2026-001510,,NO_FLAG_FROM_ADDRESS_ALONE,household HH-040: 2 claimants share address (address+surname); not evidence of fraud

@@ -1,7 +1,7 @@
 """Streamlit entry point.  Run with:  streamlit run app.py"""
 import streamlit as st
 
-from src import app_data, database, fraud_detection, ui
+from src import app_data, config, database, fraud_detection, ui
 from views import claims, evaluation_page, indicators, network, overview, workspace
 
 st.set_page_config(page_title="Fraud Network Review", layout="wide")
@@ -28,7 +28,7 @@ def main() -> None:
     ui.inject_css()
     try:
         dialect = init_database()
-    except database.DatabaseError as exc:
+    except (database.DatabaseError, config.ConfigError) as exc:
         st.error(str(exc))
         st.stop()
     except Exception as exc:  # noqa: BLE001 - show the type only; messages can contain connection details

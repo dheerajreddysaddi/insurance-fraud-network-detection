@@ -6,8 +6,9 @@ __pycache__/
 .streamlit/secrets.toml
 data/app.db
 data/generated/*
-data/ground_truth/*
 !data/generated/.gitkeep
+data/ground_truth/*
 !data/ground_truth/.gitkeep
+!data/ground_truth/*.csv
 *.egg-info/
 .DS_Store

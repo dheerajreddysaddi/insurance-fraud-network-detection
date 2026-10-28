@@ -1,6 +1,6 @@
 # Validation summary
 
-- Validated at (UTC): 2026-10-27T19:15:12+00:00
+- Validated at (UTC): 2026-10-28T08:23:06+00:00
 - Generation seed: 20261022
 - **Unexpected failures: 0**
 - Benign shared-address groups (informational, never a violation): 40
@@ -10,7 +10,7 @@
 | Table | Rows |
 |---|---:|
 | claimants | 2000 |
-| detection_runs | 1 |
+| detection_runs | 2 |
 | incidents | 5000 |
 | investigations | 0 |
 | providers | 500 |
@@ -20,7 +20,7 @@
 | policies | 2799 |
 | claims | 5000 |
 | claim_status_events | 18948 |
-| fraud_indicators | 510 |
+| fraud_indicators | 1020 |
 | invoices | 6938 |
 | investigation_indicators | 0 |
 | payments | 5379 |
@@ -48,13 +48,13 @@ Expected = planted anomalies found as intended. Unexpected = a real problem.
 | pk:payments | 0 | 0 | 0 |
 | fk:policies.claimant_id | 0 | 0 | 0 |
 | fk:claims.policy_id | 0 | 0 | 0 |
-| fk:claims.claimant_id | 0 | 0 | 0 |
 | fk:claims.incident_id | 0 | 0 | 0 |
+| fk:claims.claimant_id | 0 | 0 | 0 |
 | fk:claim_status_events.claim_id | 0 | 0 | 0 |
 | fk:fraud_indicators.run_id | 0 | 0 | 0 |
 | fk:fraud_indicators.claim_id | 0 | 0 | 0 |
-| fk:invoices.provider_id | 0 | 0 | 0 |
 | fk:invoices.claim_id | 0 | 0 | 0 |
+| fk:invoices.provider_id | 0 | 0 | 0 |
 | fk:payments.claim_id | 0 | 0 | 0 |
 | fk:payments.invoice_id | 0 | 0 | 0 |
 | edges:unknown_endpoint | 0 | 0 | 0 |

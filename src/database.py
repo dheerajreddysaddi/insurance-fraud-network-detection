@@ -238,7 +238,7 @@ def get_engine():
     if _engine is None:
         url = config.get_database_url()
         kwargs = {"connect_args": {"check_same_thread": False}} if url.startswith("sqlite") else {}
-        engine = create_engine(url, pool_pre_ping=True, **kwargs)
+        engine = create_engine(url, pool_pre_ping=True, pool_recycle=300, **kwargs)
         if engine.dialect.name == "sqlite":
             @event.listens_for(engine, "connect")
             def _enable_foreign_keys(dbapi_conn, _record):

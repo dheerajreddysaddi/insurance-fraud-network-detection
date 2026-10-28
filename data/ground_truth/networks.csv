@@ -1,0 +1,7 @@
+network_id,pattern,n_claimants,n_claims,description
+NET-01,contact_ring,6,6,contact ring
+NET-02,contact_ring,6,6,contact ring
+NET-03,narrative_ring,5,7,narrative ring
+NET-04,narrative_ring,5,7,narrative ring
+NET-05,provider_collusion,5,10,provider collusion
+NET-06,provider_collusion,5,10,provider collusion
