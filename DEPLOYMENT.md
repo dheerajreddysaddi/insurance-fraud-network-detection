@@ -1,6 +1,5 @@
 # Deployment
 
-**Status:** not yet deployed or verified. Fill in the checklist at the bottom as you complete each step.
 
 ## 1. Platform choice
 - **Streamlit Community Cloud** hosts the app free, straight from GitHub, with a shareable HTTPS URL.
