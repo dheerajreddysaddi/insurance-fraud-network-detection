@@ -1,10 +1,6 @@
 # AI Usage History
 ## Project: Insurance Fraud Network Detection
 
-*Note: This document should be finalized against the actual prompts and development interactions used during the project.*
-
-*Section 3 contains messages exactly as they were sent. Where only a log, traceback or screenshot was sent, that is stated.*
-
 ### 1. Understanding the Project
 
 **Question 1**
