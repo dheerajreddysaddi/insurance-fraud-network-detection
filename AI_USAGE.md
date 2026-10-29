@@ -31,8 +31,6 @@ How can I improve the layout of the Streamlit dashboard so that the metrics, tab
 
 ### 3. Debugging and Code Issues
 
-*[Fill in before submitting: who sent these messages, e.g. "The messages below were written by <NAME> in a Claude conversation."]*
-
 **Question 7: Red error box in the sidebar (exact messages, one with a screenshot)**
 
 > what is that error on the left side
