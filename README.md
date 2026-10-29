@@ -5,6 +5,11 @@ payments, flags suspicious networks with explainable rules, and lets an analyst 
 A high score means **review recommended**, never "fraud proven".
 
 All data is synthetic, generated locally with a fixed seed. No real personal data is used.
+![Overview: networks to review first](docs/images/overview.png)
+![Claims Explorer](docs/images/claims.png)
+![Network analysis: graph and evidence](docs/images/network1.png)
+![Network analysis: graph and evidence](docs/images/network2.png)
+![Evaluation against the synthetic answer key](docs/images/evaluation.png)
 
 ## Features
 - Deterministic generator (seed `20261022`): 5,000 claims, 2,000 claimants, 500 providers, 8,000 relationship edges (full mode).
