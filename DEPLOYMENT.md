@@ -44,7 +44,7 @@ Evaluation page will report a mismatch.
 
 ## 5. Create the Streamlit app
 1. Go to share.streamlit.io, sign in with GitHub, choose **Create app**.
-2. Repository `srinithya182/insurance-fraud-network-detection`, branch `main`, main file `app.py`.
+2. Repository `dheerajreddysaddi/insurance-fraud-network-detection`, branch `main`, main file `app.py`.
 3. Click **Advanced settings**: set **Python version 3.11** (the default is 3.12, which does not work with the pinned
    `numpy==1.26.4`), and paste into **Secrets**:
 ```toml

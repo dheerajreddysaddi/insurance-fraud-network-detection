@@ -59,7 +59,7 @@ Requires Python 3.11 and Git.
 
 **macOS / Linux**
 ```bash
-git clone https://github.com/srinithya182/insurance-fraud-network-detection.git
+git clone https://github.com/dheerajreddysaddi/insurance-fraud-network-detection.git
 cd insurance-fraud-network-detection
 python3.11 -m venv .venv
 source .venv/bin/activate
@@ -68,7 +68,7 @@ cp .env.example .env
 ```
 **Windows (PowerShell)**
 ```powershell
-git clone https://github.com/srinithya182/insurance-fraud-network-detection.git
+git clone https://github.com/dheerajreddysaddi/insurance-fraud-network-detection.git
 cd insurance-fraud-network-detection
 py -3.11 -m venv .venv
 .venv\Scripts\Activate.ps1

@@ -1,6 +1,6 @@
 # Validation summary
 
-- Validated at (UTC): 2026-10-29T09:57:38+00:00
+- Validated at (UTC): 2026-10-29T10:20:29+00:00
 - Generation seed: 20261022
 - **Unexpected failures: 0**
 - Benign shared-address groups (informational, never a violation): 40
@@ -10,7 +10,7 @@
 | Table | Rows |
 |---|---:|
 | claimants | 2000 |
-| detection_runs | 0 |
+| detection_runs | 1 |
 | incidents | 5000 |
 | investigations | 0 |
 | providers | 500 |
@@ -20,7 +20,7 @@
 | policies | 2799 |
 | claims | 5000 |
 | claim_status_events | 18948 |
-| fraud_indicators | 0 |
+| fraud_indicators | 510 |
 | invoices | 6938 |
 | investigation_indicators | 0 |
 | payments | 5379 |
@@ -51,6 +51,8 @@ Expected = planted anomalies found as intended. Unexpected = a real problem.
 | fk:claims.incident_id | 0 | 0 | 0 |
 | fk:claims.policy_id | 0 | 0 | 0 |
 | fk:claim_status_events.claim_id | 0 | 0 | 0 |
+| fk:fraud_indicators.run_id | 0 | 0 | 0 |
+| fk:fraud_indicators.claim_id | 0 | 0 | 0 |
 | fk:invoices.provider_id | 0 | 0 | 0 |
 | fk:invoices.claim_id | 0 | 0 | 0 |
 | fk:payments.claim_id | 0 | 0 | 0 |
@@ -69,6 +71,7 @@ Expected = planted anomalies found as intended. Unexpected = a real problem.
 | enum:relationship_edges.edge_type | 0 | 0 | 0 |
 | enum:relationship_edges.src_type | 0 | 0 | 0 |
 | enum:relationship_edges.dst_type | 0 | 0 | 0 |
+| enum:fraud_indicators.severity | 0 | 0 | 0 |
 | date_format:claimants.date_of_birth | 0 | 0 | 0 |
 | date_format:claimants.registered_date | 0 | 0 | 0 |
 | date_format:providers.registered_date | 0 | 0 | 0 |
@@ -105,3 +108,4 @@ Expected = planted anomalies found as intended. Unexpected = a real problem.
 | quarantine:policy_actually_exists | 0 | 0 | 0 |
 | quarantine:claim_nonexistent_policy | 5 | 5 | 0 |
 | edges:attribute_pair_missing | 2 | 2 | 0 |
+| indicators:bad_reference | 0 | 0 | 0 |
