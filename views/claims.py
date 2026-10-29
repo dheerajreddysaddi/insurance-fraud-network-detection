@@ -18,7 +18,7 @@ def _frame(tables, a):
     providers = tables["invoices"].groupby("claim_id")["provider_id"].agg(
         lambda s: ", ".join(sorted(set(s)))).rename("providers")
     paid = tables["payments"].groupby("claim_id")["amount_cents"].sum().rename("paid_cents")
-    scores = a["claim_scores"][["claim_id", "risk_score", "risk_tier", "flagged", "network_id", "indicator_types"]]
+    scores = a["claim_scores"][["claim_id", "risk_score", "risk_tier", "flagged", "network_id", "indicator_types", "n_indicators"]]
     df = (tables["claims"].merge(names, on="claimant_id").merge(scores, on="claim_id")
           .merge(providers, on="claim_id", how="left").merge(paid, on="claim_id", how="left"))
     df["providers"] = df["providers"].fillna("")
@@ -64,7 +64,7 @@ def render(ctx):
         return
     tables, a = ctx["tables"], ctx["analysis"]
     base = _frame(tables, a)
-    f = _filter(base).sort_values(["risk_score", "claim_id"], ascending=[False, True])
+    f = _filter(base).sort_values(["risk_score", "n_indicators", "claim_id"], ascending=[False, False, True])
     st.caption(f"{len(f):,} of {len(base):,} claims match. Showing the first 1,000, highest risk first.")
     shown = f.head(1000).assign(claimed_inr=lambda d: d["claimed_cents"] / 100,
                                 approved_inr=lambda d: d["approved_cents"] / 100,

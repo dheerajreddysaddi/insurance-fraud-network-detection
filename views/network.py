@@ -89,8 +89,7 @@ def render(ctx):
     st.dataframe(pd.DataFrame({
         "Rank": shown["rank"], "Network": shown["network_id"], "Priority": shown["priority"].str.title(),
         "Score": shown["network_score"], "Claimants": shown["n_claimants"], "Claims": shown["n_claims"],
-        "Providers": shown["n_providers"], "Warning signs": shown["indicator_types"].map(ui.friendly_list),
-        "Missing from records": shown["unrecorded_edges"]}), hide_index=True, use_container_width=True)
+        "Providers": shown["n_providers"]}), hide_index=True, use_container_width=True)
 
     ids = list(shown["network_id"])
     if st.session_state.get("network_choice") not in ids:
@@ -107,8 +106,12 @@ def render(ctx):
     ui.kpi(m[0], "Claimants", int(row["n_claimants"]))
     ui.kpi(m[1], "Claims", int(row["n_claims"]))
     ui.kpi(m[2], "Providers", int(row["n_providers"]))
-    ui.kpi(m[3], "Claimed", ui.money(row["total_claimed_cents"]))
-    ui.kpi(m[4], "Paid", ui.money(row["total_paid_cents"]))
+    ui.kpi(m[3], "Claimed", ui.money_short(row["total_claimed_cents"]), ui.money(row["total_claimed_cents"]))
+    ui.kpi(m[4], "Paid", ui.money_short(row["total_paid_cents"]), ui.money(row["total_paid_cents"]))
+    if row["total_paid_cents"] > row["total_claimed_cents"]:
+        st.warning(f"Payments in this group ({ui.money(row['total_paid_cents'])}) exceed the amount claimed "
+                    f"({ui.money(row['total_claimed_cents'])}). This is a financial exception worth checking; "
+                      "on its own it is not proof of fraud.")
 
     nodes = set(row["claimant_ids"]) | set(row["provider_ids"])
     sub = G.subgraph(nodes)
@@ -130,7 +133,10 @@ def render(ctx):
         edges = edges[edges["status"].isin(wanted)].copy()
         edges["link_type"] = edges["link_type"].map(ui.friendly)
         edges["status"] = edges["status"].map(STATUS_PLAIN)
-        st.dataframe(edges, hide_index=True, use_container_width=True)
+        edges = edges.drop(columns=["indicator_id"]).rename(columns={
+            "from": "From", "to": "To", "link_type": "Connection", "status": "Status", "evidence": "Evidence"})
+        st.dataframe(edges, hide_index=True, use_container_width=True,
+                        column_config={"Evidence": st.column_config.TextColumn(width="large")})
         st.caption("Recorded = in the relationship_edges table. Inferred by detector = derived from claim or invoice data. "
                    "In data, missing from records = true in the data but absent from the recorded edges.")
     with t2:

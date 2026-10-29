@@ -44,7 +44,7 @@ def _panel(df, by_id, key):
 
 def render(ctx):
     ui.page_header("Fraud Indicators & Exceptions", "Every rule hit, with the rule and the evidence behind it. "
-                     "Suspicious activity, data problems and innocent sharing are kept apart.")
+                   "Suspicious activity, data problems and innocent sharing are kept apart.")
     if ctx["analysis"] is None:
         ui.no_detection()
         return

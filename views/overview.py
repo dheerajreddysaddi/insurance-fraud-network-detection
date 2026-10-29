@@ -20,13 +20,14 @@ def _queue_card(r) -> None:
     if len(signs) > 4:
         chips += ui.chip(f"+{len(signs) - 4} more")
     with st.container(border=True):
-        c = st.columns([0.6, 5.4, 1.4, 1.4])
+        c = st.columns([0.6, 5.2, 1.1, 1.3], vertical_alignment="center")
         c[0].markdown(f"<div class='rank'>#{r.rank}</div>", unsafe_allow_html=True)
         c[1].markdown(f"<div class='q-title'>{ui.plural(r.n_claimants, 'claimant')} linked through "
                       f"{ui.plural(r.n_providers, 'provider')}, {ui.plural(r.n_claims, 'claim')}</div>{chips}",
                       unsafe_allow_html=True)
-        c[2].markdown(f"{ui.badge(r.priority.title(), ui.RISK_TONE[r.priority])}"
-                      f"<div class='q-score'>{r.network_score}</div>", unsafe_allow_html=True)
+        c[2].markdown(f"<div style='text-align:center'>{ui.badge(r.priority.title(), ui.RISK_TONE[r.priority])}"
+                      f"<div class='q-score' style='text-align:center'>{r.network_score}</div></div>",
+                      unsafe_allow_html=True)
         c[3].button("Review", key=f"rev_{r.network_id}", on_click=_open_network, args=(r.network_id,),
                     use_container_width=True)
 

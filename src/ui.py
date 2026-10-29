@@ -27,6 +27,7 @@ FRIENDLY = {
     "UNUSUAL_TIMING": "Unusual timing", "REPEAT_CLAIMANT_PROVIDER": "Repeat visits to one provider",
     "PAYMENT_EXCEEDS_APPROVED": "Paid more than approved", "DATA_INTEGRITY_VIOLATION": "Record failed import checks",
     "MISSING_RELATIONSHIP_EDGE": "Relationship missing from records", "BENIGN_SHARED_ADDRESS": "Shared address (household)",
+    "CLAIMANT_PROVIDER": "Claimant used provider",
 }
 
 
@@ -66,6 +67,8 @@ def inject_css() -> None:
     .kpi .v {font-size: 1.65rem; font-weight: 650; line-height: 1.25;}
     .kpi .n {font-size: .8rem; color: #6B7280;}
     [data-testid="stMetricValue"] {font-size: 1.4rem;}
+    h2, h3 {margin-top: 1.4rem !important;}
+    .callout {margin: 1rem 0 1.2rem;}
     </style>""", unsafe_allow_html=True)
 
 
@@ -118,6 +121,16 @@ def callout(body_html: str) -> None:
 
 def money(cents) -> str:
     return "-" if cents is None or pd.isna(cents) else f"INR {int(cents) / 100:,.0f}"
+
+def money_short(cents) -> str:
+    if cents is None or pd.isna(cents):
+        return "-"
+    inr = int(cents) / 100
+    if inr >= 1e7:
+        return f"INR {inr / 1e7:.2f} Cr"
+    if inr >= 1e5:
+        return f"INR {inr / 1e5:.1f} L"
+    return f"INR {inr:,.0f}"
 
 
 def kv_table(items: dict) -> None:

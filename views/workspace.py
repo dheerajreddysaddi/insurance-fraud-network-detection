@@ -1,6 +1,6 @@
 """Investigation Workspace: open, review, change status, add notes. History is append-only."""
 import streamlit as st
-
+import pandas as pd
 from src import app_data, investigations, ui
 from src.constants import ENUMS
 from src.investigations import ALLOWED_TRANSITIONS, InvestigationError
@@ -100,6 +100,9 @@ def render(ctx):
         return
     wanted = st.multiselect("Filter by status", ENUMS["investigation_status"])
     shown = inv[inv["current_status"].isin(wanted)] if wanted else inv
+    shown = shown.assign(
+    opened_at=pd.to_datetime(shown["opened_at"]).dt.strftime("%d %b %Y, %H:%M UTC"),
+    current_status=shown["current_status"].str.replace("_", " ").str.title())
     row = ui.table_with_selection(shown[["investigation_id", "subject_type", "subject_id", "priority",
                                            "current_status", "opened_by", "opened_at"]], "inv_table",
                                     {"investigation_id": "Investigation", "subject_type": "Type", "subject_id": "Subject",
