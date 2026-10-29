@@ -12,3 +12,6 @@ data/ground_truth/*
 !data/ground_truth/*.csv
 *.egg-info/
 .DS_Store
+# Local Python environment and installer
+venv/
+python-3.11.2-macos11.pkg
