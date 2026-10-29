@@ -45,8 +45,15 @@ Households sharing an address score 0 and create no link. Shared phone/email cou
 UNUSUAL_TIMING needs two signals. Repeat claimant-provider is a weak 5. Narrative matches only count across different
 claimants. Networks need two distinct indicator types. These controls work at rule level (rules-only FPR 0.006), but the
 network step still flags many ordinary claims (rules + network FPR 0.045; 0.064 on seed 777).
-[FILL IN after inspecting the false-positive networks on the Evaluation page: which signals and providers linked unrelated
-claimants.]
+### False-positive findings
+
+The evaluation results show that network-based detection can identify all planted suspicious networks, but it can also connect unrelated claimants into larger networks. With the default seed, 6 of 12 flagged networks were false positives. With seed 777, 7 of 13 flagged networks were false positives, including a large false-positive network containing 26 claimants.
+
+These results suggest that weak indicators can combine through shared providers or other connections, causing unrelated claimants to be grouped together. The current aggregate metrics do not establish exactly which providers and signals caused each false-positive network, so those specific causes require further inspection in the Evaluation page.
+
+Potential improvements include limiting the influence of high-volume providers, applying community detection, and evaluating suspicious connections at the claim level rather than relying only on network-level scores. These improvements are candidates for future work, not implemented features.
+
+**Trade-off:** The current approach prioritizes recovering all planted suspicious networks, but this comes at the cost of additional false positives. Therefore, a high score should trigger investigation and must not be treated as proof of fraud.
 
 ## Results (calculated, not estimated)
 Default seed, rules + network: precision 0.172, recall 1.000, F1 0.293, FPR 0.045; 6/6 planted networks recovered, 6 of 12
