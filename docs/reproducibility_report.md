@@ -2,7 +2,7 @@
 
 - Scale: full
 - Seed: 20261022
-- Checked at (UTC): 2026-10-28T08:22:47+00:00 (report metadata only; it is not part of the generated data)
+- Checked at (UTC): 2026-10-29T19:16:52+00:00 (report metadata only; it is not part of the generated data)
 - Result: **IDENTICAL** (26 files, two separate runs)
 
 | File | Lines | SHA-256 run 1 (first 16) | SHA-256 run 2 (first 16) | Same |
