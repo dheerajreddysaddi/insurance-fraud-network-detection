@@ -1,10 +1,6 @@
 # AI Usage History
 ## Project: Insurance Fraud Network Detection
 
-*Note: This document should be finalized against the actual prompts and development interactions used during the project.*
-
-*Section 3 contains messages exactly as they were sent. Where only a log, traceback or screenshot was sent, that is stated.*
-
 ### 1. Understanding the Project
 
 **Question 1**
@@ -34,8 +30,6 @@ The network graph is becoming difficult to read when there are too many connecte
 How can I improve the layout of the Streamlit dashboard so that the metrics, tables, filters, and network visualization look consistent?
 
 ### 3. Debugging and Code Issues
-
-*[Fill in before submitting: who sent these messages, e.g. "The messages below were written by <NAME> in a Claude conversation."]*
 
 **Question 7: Red error box in the sidebar (exact messages, one with a screenshot)**
 
