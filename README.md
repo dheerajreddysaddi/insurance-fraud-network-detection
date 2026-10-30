@@ -24,6 +24,8 @@ The app runs on Streamlit Community Cloud with a PostgreSQL database on Neon.
 
 Browsing needs no sign-in. Opening or updating investigations needs a reviewer name and the demo passcode, which the project owner shares privately with reviewers. It is not published in this repository.
 
+### Demo Passcode: Dheeraj@04
+
 ### Demo notes
 
 - The data is synthetic; no real customer information is processed.
