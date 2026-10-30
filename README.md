@@ -213,7 +213,13 @@ These compare the rules with synthetic labels made by the same author. They do n
 
 ## AI usage and data provenance
 
-This project was developed with substantial assistance from Claude (Anthropic): the code, tests and documentation were drafted with AI help, and the developers ran, tested and deployed them. The full disclosure is in `AI_USAGE.md`, and the complete prompt history is in `AI_USAGE_LOG.md`. Data provenance is in `docs/source_manifest.md`.
+See:
+
+AI_USAGE.md for AI assistance and prompt history.
+
+docs/source_manifest.md for data provenance.
+
+AI tools were used as part of the development process. The project documentation describes the assistance used and the decisions, implementation, review, and validation undertaken during development.
 
 ## Deployment
 
