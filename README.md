@@ -1,8 +1,6 @@
-import pypandoc
+# Insurance Fraud Network Detection and Investigation System
 
-readme = r'''# Insurance Fraud Network Detection and Investigation System
-
-A working investigation-support tool that links claimants, policies, claims, incidents, providers, invoices, and payments; flags suspicious networks using explainable rules; and allows analysts to record investigation decisions.
+A working investigation-support tool that links claimants, policies, claims, incidents, providers, invoices, and payments; flags suspicious networks using explainable rules; and lets analysts record investigation decisions.
 
 A high score means **review recommended**, never "fraud proven".
 
@@ -10,64 +8,62 @@ All data is synthetic and generated locally using a fixed seed. No real personal
 
 ## Live Demo
 
-**Live Application:** [Open Insurance Fraud Network Detection](https://insurance-fraud-network.streamlit.app/)
+**Live application:** [insurance-fraud-network.streamlit.app](https://insurance-fraud-network.streamlit.app/)
 
-The application is deployed using Streamlit Community Cloud. Reviewers can explore the dashboard, investigate potentially suspicious claims, analyze relationships between entities, and examine model evaluation results.
+The app runs on Streamlit Community Cloud with a PostgreSQL database on Neon.
 
-### How to Access the Live Application
+### How to explore it
 
-1. Open the [live application](https://insurance-fraud-network.streamlit.app/).
-2. Wait for the application to finish loading. If Streamlit displays a wake-up or loading screen after inactivity, follow the on-screen instructions and wait for the application to start.
-3. Explore the dashboard and the available analysis pages using the application's navigation.
-4. Open **Claims Explorer** to examine individual claims and their details.
-5. Open **Network Analysis** to investigate relationships between claimants, providers, policies, and claims.
-6. Explore **Fraud Indicators & Exceptions** to understand the rules that flag suspicious activity and data-quality issues.
-7. Open **Evaluation** to review the detection metrics against the synthetic answer key.
-8. Open **Investigation Workspace** to explore the investigation workflow. Viewing the dashboard does not require sign-in; recording investigation decisions requires the configured application access credentials.
+1. Open the live application. If it was idle, Streamlit may show a wake-up screen; wait for it to start.
+2. **Overview:** see the networks that need review first.
+3. **Claims Explorer:** search any claim and open its policy, incident, providers, invoices, payments and warning signs.
+4. **Network Analysis:** open a network to see its graph, connections and evidence.
+5. **Fraud Indicators & Exceptions:** see every rule hit, with the rule and evidence behind it.
+6. **Evaluation:** compare the rules with the synthetic answer key.
+7. **Investigation Workspace:** review the investigation workflow.
 
-### Passcode:Dheeraj@04
+Browsing needs no sign-in. Opening or updating investigations needs a reviewer name and the demo passcode, which the project owner shares privately with reviewers. It is not published in this repository.
 
-### Demo Notes
+### Demo notes
 
-- The application uses synthetic insurance data and does not process real customer information.
-- Detection scores indicate cases recommended for review, not confirmed fraud.
-- Evaluation metrics measure performance against planted patterns in synthetic data and should not be interpreted as real-world fraud-detection performance.
-- The hosted application uses the database and configuration available in its deployment environment.
-- If the hosted application is temporarily unavailable, use the screenshots below and follow the local setup instructions to run the project.
-- If investigation access requires a passcode, obtain the designated demo credentials from the project owner. Do not publish database credentials, API keys, or production secrets in this README.
+- The data is synthetic; no real customer information is processed.
+- Scores mean "review recommended", not confirmed fraud.
+- Evaluation metrics measure performance against patterns planted in synthetic data, not real-world fraud detection.
+- If the hosted app is unavailable, use the screenshots below and the local setup instructions.
 
 ## Screenshots
 
 ### Overview
-
 ![Overview: networks to review first](docs/images/overview.png)
 
 ### Claims Explorer
-
 ![Claims Explorer](docs/images/claims.png)
 
 ### Network Analysis
-
 ![Network analysis: graph and evidence](docs/images/network1.png)
 
-![Network analysis: additional graph and evidence](docs/images/network2.png)
+![Network analysis: connections and evidence](docs/images/network2.png)
 
 ### Evaluation
-
 ![Evaluation against the synthetic answer key](docs/images/evaluation.png)
+
+### Verification runs
+![Automated tests passing](docs/images/pytest.png)
+
+![Data validation summary](docs/images/validate_data.png)
+
+![Fraud detection run](docs/images/run_detection.png)
 
 ## Features
 
-- **Deterministic data generator:** Seed `20261022`; full mode generates 5,000 claims, 2,000 claimants, 500 providers, and 8,000 relationship edges.
-- **Data validation:** Checks keys, foreign keys, enumerations, date ordering, lifecycles, and monetary reconciliation. Planted anomalies are reported as expected.
-- **Explainable fraud indicators:** Rules identify suspicious patterns and provide evidence for analyst review.
-- **Network analysis:** Uses NetworkX to construct relationship graphs and rank suspicious networks.
-- **Interactive dashboard:** Includes Overview, Claims Explorer, Network Analysis, Fraud Indicators & Exceptions, Investigation Workspace, and Evaluation.
-- **Investigation history:** Stores investigation decisions and events in the configured database.
-- **Evaluation:** Measures detection against an isolated synthetic answer key using precision, recall, F1, false-positive rate, false-negative rate, and precision at K.
-- **Dual database support:** One codebase supports local SQLite and hosted PostgreSQL on Neon.
-
-See `DEPLOYMENT.md` for hosted deployment details.
+- **Deterministic data generator:** seed `20261022`; full mode creates 5,000 claims, 2,000 claimants, 500 providers and 8,000 relationship edges.
+- **Data validation:** keys, foreign keys, enumerations, date ordering, lifecycles and money reconciliation. Planted anomalies are reported as expected.
+- **Explainable indicators:** rules flag suspicious patterns and provide evidence for review.
+- **Network analysis:** NetworkX relationship graphs and ranked suspicious networks.
+- **Dashboard:** Overview, Claims Explorer, Network Analysis, Fraud Indicators & Exceptions, Investigation Workspace and Evaluation.
+- **Investigation history:** decisions and events are stored in the configured database and never overwritten.
+- **Evaluation:** precision, recall, F1, false-positive rate, false-negative rate and precision at K against an isolated synthetic answer key.
+- **Two database modes:** one codebase supports local SQLite and hosted PostgreSQL on Neon.
 
 ## Architecture
 
@@ -88,9 +84,9 @@ flowchart LR
     N --> E
 ```
 
-The detector reads database tables only. The evaluation module reads the answer-key files after detection to assess the results. The answer key is not used as an input to the detection rules.
+The detector reads database tables only. Only the evaluation module reads the answer-key files, after detection.
 
-## Entity Relationships
+## Entity relationships
 
 ```mermaid
 erDiagram
@@ -108,231 +104,131 @@ erDiagram
     INVESTIGATION ||--o{ INVESTIGATION_EVENT : history
 ```
 
-The `relationship_edges` table links claimants, providers, policies, and claims polymorphically. These relationships are checked by validation code rather than conventional foreign-key constraints.
+`relationship_edges` links claimants, providers, policies and claims polymorphically, so it is checked by validation code rather than foreign keys. Details: `docs/data_dictionary.md` and `docs/schema.md`.
 
-For more information, see `docs/data_dictionary.md` and `docs/schema.md`.
+## Technology
 
-## Technology Stack
+Python 3.11, Streamlit, pandas, NetworkX, Plotly, SQLAlchemy Core, SQLite (local), PostgreSQL on Neon (hosted), PyYAML, pytest. No LLM or paid API is needed to run anything.
 
-- Python 3.11
-- Streamlit
-- pandas
-- NetworkX
-- Plotly
-- SQLAlchemy Core
-- SQLite for local execution
-- PostgreSQL on Neon for hosted deployment
-- PyYAML
-- pytest
+## Local setup
 
-No LLM or paid API is required to run the application.
+Requires Python 3.11 (newer versions will fail to install the pinned packages) and Git.
 
-## Local Setup
-
-### Prerequisites
-
-- Python 3.11
-- Git
-
-### macOS / Linux
-
+**macOS / Linux**
 ```bash
 git clone https://github.com/dheerajreddysaddi/insurance-fraud-network-detection.git
 cd insurance-fraud-network-detection
-
 python3.11 -m venv .venv
 source .venv/bin/activate
-
 python -m pip install -r requirements.txt
 cp .env.example .env
 ```
 
-### Windows (PowerShell)
-
+**Windows (PowerShell)**
 ```powershell
 git clone https://github.com/dheerajreddysaddi/insurance-fraud-network-detection.git
 cd insurance-fraud-network-detection
-
 py -3.11 -m venv .venv
 .venv\Scripts\Activate.ps1
-
 python -m pip install -r requirements.txt
 copy .env.example .env
 ```
 
-### Environment Configuration
+Edit `.env`: leave `DATABASE_URL` empty to use local SQLite, and set `APP_PASSCODE` to a passcode of your choice. Always run `python -m ...` from the activated virtual environment. Never commit `.env` or any file containing real credentials.
 
-Edit `.env`:
-
-- Leave `DATABASE_URL` empty to use local SQLite.
-- Set `APP_PASSCODE` to a local passcode of your choice.
-
-Always use `python -m ...` commands from the activated virtual environment to ensure that the correct Python interpreter is used.
-
-Never commit `.env` or any file containing real credentials.
-
-## Run the Application
-
-From the repository root, with the virtual environment activated:
+## Run
 
 ```bash
-python scripts/generate_data.py --scale full --replace
-python scripts/validate_data.py
-python scripts/run_detection.py
-python -m streamlit run app.py
+python scripts/generate_data.py --scale full --replace   # load data
+python scripts/validate_data.py                          # writes docs/validation_summary.md
+python scripts/run_detection.py                          # saves indicators, prints evaluation
+python -m streamlit run app.py                           # http://localhost:8501
 ```
-### Screenshots
 
-![](docs/images/pytest.png)
-![](docs/images/validate_data.png)
-![](docs/images/run_detection.png)
-The commands perform the following operations:
+Sign in from the sidebar with any name and your `APP_PASSCODE` to open investigations. Viewing needs no sign-in.
 
-1. Generate the full synthetic dataset and replace existing generated data.
-2. Validate data integrity and write `docs/validation_summary.md`.
-3. Run fraud detection, save indicators, and print evaluation results.
-4. Start the Streamlit application.
+**Warning:** `--replace` rebuilds the generated data. If investigations exist, the script refuses unless you also pass `--wipe-investigations`, which erases them.
 
-Open the local URL displayed in the terminal, usually `http://localhost:8501`.
-
-Use the application sidebar to sign in with a name and the configured `APP_PASSCODE` to access investigation functionality. Dashboard viewing does not require sign-in.
-
-**Warning:** The `--replace` option replaces generated data. Review the available options and back up any records you need to preserve before regenerating data.
-
-## Tests, Exports, and Reproducibility
-
-Run the automated test suite:
+## Tests, exports, reproducibility
 
 ```bash
-python -m pytest -v
+python -m pytest -v                          # 41 tests
+python scripts/export_data.py --scale full   # CSV, JSON and seed.sql in data/generated/
+python scripts/verify_reproducibility.py     # two separate runs, compares SHA-256 of every file
+python scripts/build_docs.py                 # regenerates the data dictionary and schema docs
 ```
 
-Export generated data:
+Generated CSV, JSON, SQL and ground-truth files are byte-for-byte reproducible for a fixed seed. Detection run IDs, timestamps and investigation records are not.
 
-```bash
-python scripts/export_data.py --scale full
-```
+## Fraud rules and scoring
 
-Exports are written to `data/generated/` in CSV, JSON, and SQL formats.
-
-Verify reproducibility:
-
-```bash
-python scripts/verify_reproducibility.py
-```
-
-This command compares SHA-256 hashes across two separate generation runs.
-
-Regenerate the documentation:
-
-```bash
-python scripts/build_docs.py
-```
-
-The generated CSV, JSON, SQL, and ground-truth files are designed to be byte-for-byte reproducible for a fixed seed and configuration. Detection run IDs, timestamps, validation timestamps, and investigation records are not expected to be reproducible.
-
-## Fraud Rules and Scoring
-
-Rules are configured in `config/detection_rules.yaml`.
+Rules live in `config/detection_rules.yaml`.
 
 | Indicator | Category | Score | Rule |
 |---|---|---:|---|
-| `SHARED_PHONE` / `SHARED_EMAIL` | Suspicious | 30 + 5 per extra member, maximum 45 | Shared by claimants at different addresses |
-| `SIMILAR_NARRATIVE` | Suspicious | 30 + 5 per claim, maximum 60 | Word-set similarity of at least 0.85 across different claimants |
+| `SHARED_PHONE` / `SHARED_EMAIL` | Suspicious | 30 + 5 per extra member, max 45 | Shared by claimants at different addresses |
+| `SIMILAR_NARRATIVE` | Suspicious | 30 + 5 per claim, max 60 | Word-set similarity of at least 0.85 across different claimants |
 | `DUPLICATE_INVOICE_ACROSS_CLAIMANTS` | Suspicious | 50 | Same fingerprint or provider reference across different claimants |
-| `UNUSUAL_TIMING` | Suspicious | 10 | At least two conditions: incident within 30 days after policy start, filing within one day, or payment within one day |
-| `REPEAT_CLAIMANT_PROVIDER` | Suspicious | 5 | Same claimant and provider within 60 days; weak indicator |
-| `PAYMENT_EXCEEDS_APPROVED` | Exception | 20–40 | Payment exceeds the approved amount |
-| `DATA_INTEGRITY_VIOLATION` | Exception | 20–40 | Data integrity problem |
-| `MISSING_RELATIONSHIP_EDGE` | Exception | 20–40 | Expected relationship edge is missing |
-| `BENIGN_SHARED_ADDRESS` | Benign | 0 | Shared household address; does not create a suspicious network link |
+| `UNUSUAL_TIMING` | Suspicious | 10 | At least two of: incident within 30 days of policy start, filed within one day, paid within one day |
+| `REPEAT_CLAIMANT_PROVIDER` | Suspicious | 5 | Same claimant and provider within 60 days (weak) |
+| `PAYMENT_EXCEEDS_APPROVED`, `DATA_INTEGRITY_VIOLATION`, `MISSING_RELATIONSHIP_EDGE` | Exception | 20-40 | Reported separately, not added to fraud-risk scores |
+| `BENIGN_SHARED_ADDRESS` | Benign | 0 | Households; creates no network link |
 
-Exception indicators are reported separately and do not contribute to the fraud-risk score.
-
-A claim is flagged when its score is at least 40 or when its claimant belongs to a flagged network.
-
-A network is flagged when its score is at least 80 and it has at least two distinct indicator types.
-
-See `DESIGN_DECISIONS.md` for the rationale behind the scoring thresholds and design trade-offs.
+A claim is flagged at a score of 40 or more, or when its claimant belongs to a flagged network. A network is flagged at a score of 80 or more with at least two distinct indicator types. Rationale and trade-offs: `DESIGN_DECISIONS.md`.
 
 ## Evaluation
 
-Evaluation uses the claim as the unit of analysis. The full synthetic dataset contains 5,000 claims, including 46 claims in planted networks.
+The unit is the claim: 5,000 claims, 46 of them in planted networks.
 
-The claim-level metrics are defined as follows:
+- **Precision** = TP / (TP + FP)
+- **Recall** = TP / (TP + FN)
+- **F1** = harmonic mean of precision and recall
+- **FPR** = FP / (FP + TN)
+- **FNR** = FN / (FN + TP)
 
-- **Precision:** TP / (TP + FP)
-- **Recall:** TP / (TP + FN)
-- **F1:** Harmonic mean of precision and recall
-- **False-positive rate (FPR):** FP / (FP + TN)
-- **False-negative rate (FNR):** FN / (FN + TP)
+At network level, a flagged network is true if at least half its claimants come from one planted network. P@K is the share of the top K ranked networks that are true. Nothing is trained, so there is no train/test split.
 
-For network-level evaluation, a flagged network is considered true if at least half of its claimants belong to one planted network. Precision at K (P@K) measures the proportion of the top K ranked networks that are true.
-
-No train/test split is used because the system does not train a predictive model.
-
-### Results with the Default Seed
-
-The following results are documented for seed `20261022` using the shipped rules and the output of `scripts/run_detection.py`.
+### Results (default seed, shipped rules)
 
 | Method | TP | FP | FN | TN | Precision | Recall | F1 | FPR |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
 | Rules only | 30 | 32 | 16 | 4,922 | 0.484 | 0.652 | 0.556 | 0.006 |
 | Rules + network | 46 | 222 | 0 | 4,732 | 0.172 | 1.000 | 0.293 | 0.045 |
 
-### Network-Level Results
+Networks: 6 planted, 6 recovered, 12 flagged (6 true, 6 false), precision 0.500, P@5 0.800, P@6 0.667.
 
-- Planted networks: 6
-- Planted networks recovered: 6
-- Networks flagged: 12
-- True flagged networks: 6
-- False flagged networks: 6
-- Network precision: 0.500
-- P@5: 0.800
-- P@6: 0.667
+With seed `777` and unchanged rules, rules + network precision was 0.127 and FPR 0.064; 13 networks were flagged (7 false), and all 6 planted networks were still recovered.
 
-With seed `777` and unchanged rules, the rules-plus-network method achieved precision of 0.127 and an FPR of 0.064. Thirteen networks were flagged, seven of which were false, while all six planted networks were recovered.
+These compare the rules with synthetic labels made by the same author. They do not show real-world fraud-detection performance.
 
-These results compare rules against synthetic labels generated by the same author. They do not demonstrate real-world fraud-detection performance.
+## Known limitations
 
-## Known Limitations
+- Claim-level precision is low (about 0.13-0.17 with the network step) because every claim of every member of a flagged network is flagged.
+- Thresholds were chosen with knowledge of the generator, so results are optimistic.
+- The narrative vocabulary is small, which can produce coincidental matches.
+- Sign-in uses one shared passcode and self-declared reviewer names. This is a demo control, not production identity management.
+- Automated tests run on SQLite only; PostgreSQL is checked by the manual procedure in `DEPLOYMENT.md`.
+- Synthetic labels show injected patterns, not proven fraud.
+- The system supports prioritization and review; it does not establish fraud.
 
-- Claim-level precision is low (approximately 0.13–0.17 for the rules-plus-network method) because every claim belonging to a member of a flagged network is flagged.
-- Thresholds were chosen with knowledge of the data generator, so evaluation results are optimistic.
-- The narrative vocabulary is limited, which can produce coincidental matches.
-- Sign-in uses a shared passcode, and reviewer names are self-declared. This is a demonstration workflow, not production-grade identity management.
-- Automated tests run on SQLite only. PostgreSQL compatibility is checked using the manual procedure in `DEPLOYMENT.md`.
-- Synthetic labels represent injected patterns, not confirmed fraud.
-- The system supports investigation and prioritization; it does not establish fraud or replace human review.
+## AI usage and data provenance
 
-## AI Usage and Data Provenance
-
-See:
-
-- `AI_USAGE.md` for AI assistance and prompt history.
-- `docs/source_manifest.md` for data provenance.
-
-AI tools were used as part of the development process. The project documentation describes the assistance used and the decisions, implementation, review, and validation undertaken during development.
+This project was developed with substantial assistance from Claude (Anthropic): the code, tests and documentation were drafted with AI help, and the developers ran, tested and deployed them. The full disclosure is in `AI_USAGE.md`, and the complete prompt history is in `AI_USAGE_LOG.md`. Data provenance is in `docs/source_manifest.md`.
 
 ## Deployment
 
-The hosted application uses Streamlit Community Cloud and PostgreSQL on Neon.
-
-See `DEPLOYMENT.md` for environment variables, database configuration, persistence checks, and deployment acceptance tests.
-
-For reviewer access to the live application, use the link in the [Live Demo](#-live-demo) section above.
+The hosted app uses Streamlit Community Cloud and PostgreSQL on Neon, with the database URL and passcode stored as platform secrets, never in the repository. See `DEPLOYMENT.md` for the steps, persistence checks and acceptance tests. For the live app, see the [Live Demo](#live-demo) section.
 
 ## Troubleshooting
 
-| Problem | Suggested fix |
+| Problem | Fix |
 |---|---|
-| `ModuleNotFoundError` for an installed package | Activate the virtual environment and run `python -m pip install -r requirements.txt`. Use `python -m streamlit run app.py` to launch the app. |
-| `pyarrow requires NumPy 2.0` | Install dependencies using the pinned versions in `requirements.txt`, including `pyarrow==17.0.0` if that is the version specified in your file. |
-| Red "No secrets found" message or missing passcode field | For local execution, create `.env` from `.env.example`, configure the required values, and restart the application. Hosted configuration must be set in the deployment environment. |
-| Incorrect passcode | Check the configured `APP_PASSCODE`. Restart the local application after changing `.env`. |
-| Port 8501 is busy and Streamlit switches to another port | Stop the old process or use the alternative local URL displayed by Streamlit. On macOS/Linux, inspect the relevant port with `lsof -i :8501`. |
-| Database already contains data | Review the generator's options and use `--replace` only when replacing existing generated data is intended. If investigations exist, review `--wipe-investigations` carefully because it erases them. |
-| PowerShell blocks virtual environment activation | Run `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned` if appropriate for your environment, or consult your organization's execution-policy guidance. |
-| Live demo takes time to open | Wait for Streamlit Community Cloud to finish waking the application. Refresh once if necessary. |
-| Live demo does not load | Check the deployment status and logs, environment variables, database connectivity, and configured secrets in Streamlit Community Cloud. |
-
+| `ModuleNotFoundError` for an installed package | Wrong Python. Activate `.venv`, run `python -m pip install -r requirements.txt`, and start the app with `python -m streamlit run app.py`. |
+| `pyarrow requires NumPy 2.0` | Install from the pinned `requirements.txt` (`pyarrow==17.0.0`). |
+| Red "No secrets found" box, or no Passcode field | Create `.env` from `.env.example`, then restart the app. |
+| Wrong passcode | It is the `APP_PASSCODE` value in `.env`; restart after editing. |
+| Port 8501 busy, app moves to 8502+ | `lsof -i :8501-8510`, then `kill -9 <PID>`. Stop apps with Ctrl-C, not Ctrl-Z. |
+| "database already contains data" | Add `--replace`; if investigations exist also `--wipe-investigations` (erases them). |
+| PowerShell blocks activation | `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned` |
+| Hosted build fails on numpy, pandas or psycopg2 | Python version. Recreate the app with Python 3.11 under Advanced settings. |
+| Hosted app slow after idle | Streamlit is waking the app and Neon is resuming; wait and refresh once. |

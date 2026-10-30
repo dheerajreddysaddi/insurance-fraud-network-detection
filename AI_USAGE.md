@@ -63,7 +63,7 @@ After the first attempted fix:
 
 > the red “No secrets found” box is gone from the sidebar.-- its not gone its still there
 
-![No secrets error](docs/images/secrets.png)
+![No secrets error](docs/images/secerts.png)
 
 **Recorded outcome in the existing project history:** The application read `st.secrets` before the environment variable. The code was changed to read `APP_PASSCODE` from the environment first. The warning remained because the `.env` file did not exist; the recorded resolution was to create `.env` from `.env.example` and restart the application.
 
