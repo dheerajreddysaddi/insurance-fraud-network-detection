@@ -1,6 +1,6 @@
 # Validation summary
 
-- Validated at (UTC): 2026-10-29T10:20:29+00:00
+- Validated at (UTC): 2026-10-30T05:17:54+00:00
 - Generation seed: 20261022
 - **Unexpected failures: 0**
 - Benign shared-address groups (informational, never a violation): 40
@@ -12,17 +12,17 @@
 | claimants | 2000 |
 | detection_runs | 1 |
 | incidents | 5000 |
-| investigations | 0 |
+| investigations | 2 |
 | providers | 500 |
 | quarantine_records | 5 |
 | relationship_edges | 8000 |
-| investigation_events | 0 |
+| investigation_events | 4 |
 | policies | 2799 |
 | claims | 5000 |
 | claim_status_events | 18948 |
 | fraud_indicators | 510 |
 | invoices | 6938 |
-| investigation_indicators | 0 |
+| investigation_indicators | 8 |
 | payments | 5379 |
 
 ## Checks
@@ -46,17 +46,20 @@ Expected = planted anomalies found as intended. Unexpected = a real problem.
 | pk:invoices | 0 | 0 | 0 |
 | pk:investigation_indicators | 0 | 0 | 0 |
 | pk:payments | 0 | 0 | 0 |
+| fk:investigation_events.investigation_id | 0 | 0 | 0 |
 | fk:policies.claimant_id | 0 | 0 | 0 |
 | fk:claims.claimant_id | 0 | 0 | 0 |
 | fk:claims.incident_id | 0 | 0 | 0 |
 | fk:claims.policy_id | 0 | 0 | 0 |
 | fk:claim_status_events.claim_id | 0 | 0 | 0 |
-| fk:fraud_indicators.run_id | 0 | 0 | 0 |
 | fk:fraud_indicators.claim_id | 0 | 0 | 0 |
-| fk:invoices.provider_id | 0 | 0 | 0 |
+| fk:fraud_indicators.run_id | 0 | 0 | 0 |
 | fk:invoices.claim_id | 0 | 0 | 0 |
-| fk:payments.claim_id | 0 | 0 | 0 |
+| fk:invoices.provider_id | 0 | 0 | 0 |
+| fk:investigation_indicators.indicator_id | 0 | 0 | 0 |
+| fk:investigation_indicators.investigation_id | 0 | 0 | 0 |
 | fk:payments.invoice_id | 0 | 0 | 0 |
+| fk:payments.claim_id | 0 | 0 | 0 |
 | edges:unknown_endpoint | 0 | 0 | 0 |
 | edges:self_loop | 0 | 0 | 0 |
 | enum:policies.policy_type | 0 | 0 | 0 |
@@ -72,6 +75,9 @@ Expected = planted anomalies found as intended. Unexpected = a real problem.
 | enum:relationship_edges.src_type | 0 | 0 | 0 |
 | enum:relationship_edges.dst_type | 0 | 0 | 0 |
 | enum:fraud_indicators.severity | 0 | 0 | 0 |
+| enum:investigations.current_status | 0 | 0 | 0 |
+| enum:investigations.priority | 0 | 0 | 0 |
+| enum:investigation_events.event_type | 0 | 0 | 0 |
 | date_format:claimants.date_of_birth | 0 | 0 | 0 |
 | date_format:claimants.registered_date | 0 | 0 | 0 |
 | date_format:providers.registered_date | 0 | 0 | 0 |
@@ -109,3 +115,4 @@ Expected = planted anomalies found as intended. Unexpected = a real problem.
 | quarantine:claim_nonexistent_policy | 5 | 5 | 0 |
 | edges:attribute_pair_missing | 2 | 2 | 0 |
 | indicators:bad_reference | 0 | 0 | 0 |
+| investigations:lifecycle | 0 | 0 | 0 |
